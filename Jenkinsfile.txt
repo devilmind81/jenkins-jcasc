@@ -1,0 +1,45 @@
+pipeline {
+
+    agent {
+        label 'master' 
+    }
+    
+    tools { 
+        maven 'Maven3.6.3'
+    }
+    
+    stages {
+    
+        stage("checkout") {
+            steps {
+                git credentialsId: 'dbedb01c-58ff-417a-96ce-63b6ef7e24db', url: 'https://gitlab.com/francesco.scanferla.generali/mvn-hello-world.git'
+            }
+        } 
+               
+        stage("build") {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        
+        stage("tar") {
+            steps {
+                sh 'tar cvzf target/deploy.tag.gz Dockerfile target/*.jar'
+            }
+        }
+        
+        stage("google-cloud-builder") {
+            steps {
+                googleCloudBuild \
+                    credentialsId: 'test-tf-arch-test-dev-prj-001', \
+                    request: inline('''
+                        steps: 
+                        - name: "gcr.io/cloud-builders/docker"
+                          args: ["build", "-t", "gcr.io/test-tf-arch-test-dev-prj-001/mvn-hello-world", "."]
+                        images: ["gcr.io/test-tf-arch-test-dev-prj-001/mvn-hello-world"]
+                    '''), \
+                    source: local('target/deploy.tag.gz')
+            }
+        }
+    }
+}
