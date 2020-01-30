@@ -1,0 +1,12 @@
+version: '3.3'
+
+services:
+  jenkins:
+    image: jcasc:latest
+    ports: 
+      - 8081:8080
+      - 50000:50000
+    volumes:
+      - ../casc_configs:/var/jenkins_conf
+    environment:
+      - CASC_JENKINS_CONFIG=/var/jenkins_conf

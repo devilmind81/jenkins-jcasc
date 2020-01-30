@@ -1,0 +1,160 @@
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - gitLabApiTokenImpl:
+              apiToken: ${GITLAB_APITOKEN}
+              description: "Gitlab Public Token"
+              id: "0d3cea4b-cc99-400c-970d-938ef22646df"
+              scope: GLOBAL
+          - usernamePassword:
+              description: "Service Account Gitlab"
+              id: "dbedb01c-58ff-417a-96ce-63b6ef7e24db"
+              password: ${GITLAB_SERVICE_ACCOUNT_PASSWORD}
+              scope: GLOBAL
+              username: ${GITLAB_SERVICE_ACCOUNT_USERNAME}
+          - googleRobotPrivateKey:
+              projectId: "test-tf-arch-test-dev-prj-001"
+              serviceAccountConfig:
+                json:
+                  filename: "google-key.json"
+                  secretJsonKey: ${GOOGLE_KEY}
+jenkins:
+  agentProtocols:
+    - "JNLP4-connect"
+    - "Ping"
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Job/Read:anonymous"
+        - "Job/Read:authenticated"
+        - "Overall/Administer:admin_staff"
+        - "Overall/Read:anonymous"
+        - "View/Read:anonymous"
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: true
+  disableRememberMe: false
+  labelString: "master-label"
+  markupFormatter: "plainText"
+  mode: NORMAL
+  myViewsTabBar: "standard"
+  numExecutors: 1
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: true
+  scmCheckoutRetryCount: 3
+  securityRealm:
+    ldap:
+      configurations:
+        - displayNameAttributeName: "givenName"
+          groupMembershipStrategy:
+            fromGroupSearch:
+              filter: "(member={0})"
+          groupSearchBase: "ou=people"
+          groupSearchFilter: "(&(cn={0})(objectclass=group))"
+          inhibitInferRootDN: false
+          managerDN: ${LDAP_USER}
+          managerPasswordSecret: ${LDAP_PASSWORD}
+          rootDN: "dc=planetexpress,dc=com"
+          server: "ldap://ldap:389"
+          userSearchBase: "ou=people"
+      disableMailAddressResolver: false
+      disableRolePrefixing: true
+      groupIdStrategy: "caseInsensitive"
+      userIdStrategy: "caseInsensitive"
+  slaveAgentPort: 50000
+  systemMessage: "POC GCP CI/CD. Jenkins è stato creato con JCasC"
+  updateCenter:
+    sites:
+      - id: "default"
+        url: "https://updates.jenkins.io/update-center.json"
+  views:
+    - all:
+        name: "all"
+  viewsTabBar: "standard"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  envInject:
+    enableLoadingFromMaster: false
+    enablePermissions: false
+    hideInjectedVars: false
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: true
+  sSHD:
+    port: -1
+unclassified:
+  defaultFolderConfiguration:
+    healthMetrics:
+      - worstChildHealthMetric:
+          recursive: true
+  extendedEmailPublisher:
+    adminRequiredForTemplateTesting: false
+    allowUnregisteredEnabled: false
+    charset: "UTF-8"
+    debugMode: false
+    defaultBody:
+      "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:\r\n\r\nCheck\
+      \ console output at $BUILD_URL to view the results."
+    defaultContentType: "text/plain"
+    defaultSubject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!"
+    maxAttachmentSize: -1
+    maxAttachmentSizeMb: 0
+    precedenceBulk: false
+    useSsl: false
+    watchingEnabled: false
+  gitHubPluginConfig:
+    hookUrl: "http://localhost:8081/github-webhook/"
+  gitLabConnectionConfig:
+    connections:
+      - apiTokenId: "0d3cea4b-cc99-400c-970d-938ef22646df"
+        clientBuilderId: "autodetect"
+        connectionTimeout: 10
+        ignoreCertificateErrors: false
+        name: "Gitlab"
+        readTimeout: 10
+        url: "https://gitlab.com"
+  gitSCM:
+    createAccountBasedOnEmail: false
+    showEntireCommitSummaryInChanges: false
+    useExistingAccountWithSameEmail: false
+  globalSettings:
+    failOnCorrupt: false
+    noAuthors: false
+    quietMode: false
+  location:
+    adminAddress: "support@test.com"
+    url: "http://jenkins-app1.generali.it/"
+  mailer:
+    charset: "UTF-8"
+    useSsl: false
+  mavenModuleSet:
+    localRepository: "default"
+  pollSCM:
+    pollingThreadCount: 10
+  timestamperConfig:
+    allPipelines: false
+    elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
+    systemTimeFormat: "'<b>'HH:mm:ss'</b> '"
+  upstream:
+    globalUpstreamFilterStrategy: UseOldest
+tool:
+  git:
+    installations:
+      - home: "git"
+        name: "Default"
+  maven:
+    installations:
+      - name: "Maven3.6.3"
+        properties:
+          - installSource:
+              installers:
+                - maven:
+                    id: "3.6.3"

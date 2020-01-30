@@ -1,0 +1,11 @@
+jobs:
+  - script: >
+      multibranchPipelineJob('mvn-hello-world') {
+          branchSources {
+              git {
+                  id = 'mvn-hello-world'
+                  remote('https://gitlab.com/francesco.scanferla.generali/mvn-hello-world.git')
+                  credentialsId('dbedb01c-58ff-417a-96ce-63b6ef7e24db')
+              }
+          }
+      }

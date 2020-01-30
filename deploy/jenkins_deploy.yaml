@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-app1
+  namespace: jenkins-app1
+  labels:
+    app: jenkins-app1
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins-app1
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: jenkins-app1
+        version: v1
+    spec:
+      volumes:
+      - name: config
+        configMap:
+          name: jenkins-app1
+      containers:
+      - name: jenkins-app1
+        image: gcr.io/test-tf-arch-test-dev-prj-001/jenkins-custom:latest
+        env:
+        - name: CASC_JENKINS_CONFIG
+          value: "/var/jenkins_conf"
+        envFrom:
+        - secretRef:
+            name: jenkins-app1
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 1
+            memory: 1024Mi
+        volumeMounts:
+        - name: config
+          mountPath: /var/jenkins_conf
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      
